@@ -57,3 +57,24 @@ test("should find item in array", function () {
     var result = collection.find({ members: { name: 'honda'} });
     equal(result[0].club, 'kodomo');
 });
+
+test("findOne() should return one row", function () {
+    var result = collection.findOne({ members: { name: 'honda'} });
+    equal(result.club, 'kodomo');
+});
+
+module("update", {
+    setup: function () {
+        collection = ms([
+            { name: 'kino', age: 29 },
+            { name: 'tom', age: 59 }
+        ]);
+    }
+});
+
+test("should update row item", function () {
+    var x = collection.findOne({ name: 'tom' });
+    x.age = 60;
+    collection.update({ name: 'tom' }, x);
+    equal(collection.findOne({ name: 'tom' }).age, 60);
+});

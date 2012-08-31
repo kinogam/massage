@@ -1,64 +1,16 @@
 ﻿(function (window) {
     'use strict';
 
-    //    var Collection = function (name) {
-    //        var _name = name;
-    //        this._data = [];
-    //        this.getName = function () {
-    //            return _name;
-    //        };
-    //    };
-
-    //    Collection.prototype = {
-    //        drop: function () {
-    //            var name = this.getName();
-    //            if (CollectionMap[name] != null) {
-    //                delete CollectionMap[name];
-    //                return true;
-    //            }
-    //            else {
-    //                return false;
-    //            }
-    //        },
-    //        count: function () {
-    //            return this._data.length;
-    //        },
-    //        insert: function (obj) {
-    //            this._data[this._data.length] = obj;
-    //        },
-    //        find: function (selector) {
-    //            if (selector != null) {
-    //                var result = [];
-    //                for (var i = 0; i < this._data.length; i++) {
-    //                    var row = this._data[i];
-    //                    if (nodeMatch(row, selector)) {
-    //                        result.push(row);
-    //                    }
-    //                }
-    //                return result;
-    //            }
-    //            else
-    //                return this._data;
-    //        }
-    //    };
-
-
-
-    //    var CollectionMap = {};
-
-
-    //    window.kinodb = db;
-
     var ms = function (array) {
         var _ms = array || [];
         _ms.insert = _insert;
         _ms.find = _find;
+        _ms.findOne = _findOne;
+        _ms.update = _update;
         return _ms;
     };
 
-    var _insert = function (item) {
-        this.push(item);
-    };
+
 
     var _find = function (selector) {
         if (selector != null) {
@@ -73,6 +25,21 @@
         }
         else {
             return this;
+        }
+    };
+
+    var _findOne = function (selector) {
+        if (selector != null) {
+            for (var i = 0; i < this.length; i++) {
+                var row = this[i];
+                if (nodeMatch(row, selector)) {
+                    return row;
+                }
+            }
+            return null;
+        }
+        else {
+            return this.length > 0 ? this[0] : null;
         }
     };
 
@@ -101,7 +68,24 @@
             }
         }
         return true;
-    }
+    };
+
+    var _insert = function (item) {
+        this.push(item);
+    };
+
+    var _update = function (criteria, objNew) {
+        if (criteria != null) {
+            for (var i = 0; i < this.length; i++) {
+                if (nodeMatch(this[i], criteria)) {
+                    this[i] = objNew;
+                }
+            }
+        }
+        return this;
+    };
+
+
 
     window.massage = ms;
 
