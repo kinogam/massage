@@ -103,3 +103,13 @@ test("findOne() should return one object", function () {
     var result = collection.findOne({ members: { name: 'angela'} });
     equal(result.age, 9);
 });
+
+module("fix bug");
+
+test("fix object parameter bug", function () {
+    var md = massage({ club: 'kodomo', members: [{ name: 'angela', age: 9 }, { name: 'honda', age: 8}] });
+    var obj = md.findOne({ members: { name: 'honda'} });
+    var list = md.find({ members: { name: 'honda'} });
+    equal(obj.age, 8);
+    equal(list[0].age, 8);
+});

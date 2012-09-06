@@ -83,14 +83,27 @@
 
     var _find = function (selector) {
         if (selector != null) {
-            var result = [];
-            for (var i = 0; i < this.length; i++) {
-                var item = nodeFind(this[i], selector);
-                if (item != null) {
-                    result.push(item);
+
+            if (Object.prototype.toString.call(this) === '[object Array]') {
+                var result = [];
+                for (var i = 0; i < this.length; i++) {
+                    var item = nodeFind(this[i], selector);
+                    if (item != null) {
+                        result.push(item);
+                    }
                 }
+                return result;
             }
-            return result;
+            else {
+                var item = nodeFind(this, selector);
+                if (Object.prototype.toString.call(item) === '[object Array]') {
+                    return item;
+                }
+                var list = [];
+                list.push(item);
+                return list;
+            }
+
         }
         else {
             return this;
@@ -128,13 +141,22 @@
 
     var _findOne = function (selector) {
         if (selector != null) {
-            for (var i = 0; i < this.length; i++) {
-                var item = nodeFind(this[i], selector);
+            if (Object.prototype.toString.call(this) === '[object Array]') {
+                for (var i = 0; i < this.length; i++) {
+                    var item = nodeFind(this[i], selector);
+                    if (item != null) {
+                        return item;
+                    }
+                }
+            }
+            else {
+                var item = nodeFind(this, selector);
                 if (item != null) {
                     return item;
                 }
             }
             return null;
+
         }
         else {
             return this.length > 0 ? this[0] : null;
