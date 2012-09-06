@@ -1,18 +1,25 @@
-﻿(function (window) {
+﻿/*
+    create by kinogam
+    https://github.com/kinogam/massage
+*/
+
+(function (window) {
     'use strict';
 
     var ms = function (array) {
         var _ms = array || [];
         _ms.insert = _insert;
+        _ms.match = _match;
+        _ms.matchOne = _matchOne;
         _ms.find = _find;
         _ms.findOne = _findOne;
-        _ms.update = _update;
         return _ms;
     };
 
 
+    /* match module */
 
-    var _find = function (selector) {
+    var _match = function (selector) {
         if (selector != null) {
             var result = [];
             for (var i = 0; i < this.length; i++) {
@@ -28,7 +35,7 @@
         }
     };
 
-    var _findOne = function (selector) {
+    var _matchOne = function (selector) {
         if (selector != null) {
             for (var i = 0; i < this.length; i++) {
                 var row = this[i];
@@ -70,19 +77,74 @@
         return true;
     };
 
-    var _insert = function (item) {
-        this.push(item);
-    };
+    /* end match module */
 
-    var _update = function (criteria, objNew) {
-        if (criteria != null) {
+    /* find module */
+
+    var _find = function (selector) {
+        if (selector != null) {
+            var result = [];
             for (var i = 0; i < this.length; i++) {
-                if (nodeMatch(this[i], criteria)) {
-                    this[i] = objNew;
+                var item = nodeFind(this[i], selector);
+                if (item != null) {
+                    result.push(item);
                 }
             }
+            return result;
         }
-        return this;
+        else {
+            return this;
+        }
+    };
+
+    var nodeFind = function (node, selector) {
+        for (var i in selector) {
+            var nodeItem = node[i];
+            //if no such property then return null
+            if (nodeItem == null) {
+                return null;
+            }
+            //check if property is object or literal
+            if (typeof selector[i] === 'object') {
+                if (Object.prototype.toString.call(nodeItem) === '[object Array]') {
+                    for (var j = 0; j < nodeItem.length; j++) {
+                        var item = nodeFind(nodeItem[j], selector[i]);
+                        if (item != null) {
+                            return item;
+                        }
+                    }
+                    return null;
+                }
+                else {
+                    return nodeFind(node[i], selector[i]);
+                }
+            }
+            else if (node[i] != selector[i]) {
+                return null;
+            }
+        }
+        return node;
+    };
+
+    var _findOne = function (selector) {
+        if (selector != null) {
+            for (var i = 0; i < this.length; i++) {
+                var item = nodeFind(this[i], selector);
+                if (item != null) {
+                    return item;
+                }
+            }
+            return null;
+        }
+        else {
+            return this.length > 0 ? this[0] : null;
+        }
+    };
+
+    /* end find module */
+
+    var _insert = function (item) {
+        this.push(item);
     };
 
 
