@@ -73,7 +73,7 @@ module("find", {
             { name: 'jobs', age: 29, location: { address: 'king street', postCode: '5200'} },
             { name: 'rose', age: 17, location: { address: 'rose street', postCode: '5210'} },
             { club: 'ysh', members: [{ name: 'james', age: 19 }, { name: 'marry', age: 33}] },
-            { club: 'kodomo', members: [{ name: 'angela', age: 9 }, { name: 'honda', age: 8}] }
+            { club: 'kodomo', members: [{ name: 'angela', age: 9 }, { name: 'honda', age: 8 }, { name: 'linda', age: 8}] }
         ]);
     }
 });
@@ -94,9 +94,16 @@ test("should find item in more than one level", function () {
     equal(result[0].postCode, '5200');
 });
 
-test("should find item in array", function () {
+test("should find item in sub array", function () {
     var result = collection.find({ members: { name: 'honda'} });
     equal(result[0].age, 8);
+
+    //find members that age is 8
+    result = collection.find({ members: { age: 8} });
+    equal(result.length, 2);
+    equal(result[0].name, 'honda');
+    equal(result[1].name, 'linda');
+
 });
 
 test("findOne() should return one object", function () {

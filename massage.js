@@ -58,7 +58,7 @@
                 return false;
             }
             if (typeof selector[i] === 'object') {
-                if (Object.prototype.toString.call(nodeItem) === '[object Array]') {
+                if (isArray(nodeItem)) {
                     for (var j = 0; j < nodeItem.length; j++) {
                         if (nodeMatch(nodeItem[j], selector[i])) {
                             return true;
@@ -84,19 +84,24 @@
     var _find = function (selector) {
         if (selector != null) {
 
-            if (Object.prototype.toString.call(this) === '[object Array]') {
+            if (isArray(this)) {
                 var result = [];
                 for (var i = 0; i < this.length; i++) {
                     var item = nodeFind(this[i], selector);
                     if (item != null) {
-                        result.push(item);
+                        if (isArray(item)) {
+                            result = result.concat(item);
+                        }
+                        else {
+                            result.push(item);
+                        }
                     }
                 }
                 return result;
             }
             else {
                 var item = nodeFind(this, selector);
-                if (Object.prototype.toString.call(item) === '[object Array]') {
+                if (isArray(item)) {
                     return item;
                 }
                 var list = [];
@@ -119,14 +124,16 @@
             }
             //check if property is object or literal
             if (typeof selector[i] === 'object') {
-                if (Object.prototype.toString.call(nodeItem) === '[object Array]') {
+                if (isArray(nodeItem)) {
+                    var result = [];
                     for (var j = 0; j < nodeItem.length; j++) {
                         var item = nodeFind(nodeItem[j], selector[i]);
                         if (item != null) {
-                            return item;
+                            result.push(item);
                         }
                     }
-                    return null;
+                    //if sub array match no item,then return null
+                    return result.length > 0 ? result : null;
                 }
                 else {
                     return nodeFind(node[i], selector[i]);
@@ -141,22 +148,33 @@
 
     var _findOne = function (selector) {
         if (selector != null) {
-            if (Object.prototype.toString.call(this) === '[object Array]') {
+            //array
+            if (isArray(this)) {
                 for (var i = 0; i < this.length; i++) {
                     var item = nodeFind(this[i], selector);
                     if (item != null) {
+                        if (isArray(item)) {
+                            return item[0];
+                        }
+                        else {
+                            return item;
+                        }
+                    }
+                }
+            }
+            //object
+            else {
+                var item = nodeFind(this, selector);
+                if (item != null) {
+                    if (isArray(item)) {
+                        return item[0];
+                    }
+                    else {
                         return item;
                     }
                 }
             }
-            else {
-                var item = nodeFind(this, selector);
-                if (item != null) {
-                    return item;
-                }
-            }
             return null;
-
         }
         else {
             return this.length > 0 ? this[0] : null;
@@ -170,6 +188,9 @@
     };
 
 
+    var isArray = function (obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    };
 
     window.massage = ms;
 
