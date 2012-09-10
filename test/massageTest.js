@@ -13,6 +13,8 @@ test("given a array that length is 3, then collection's length should be 3", fun
     equal(ms([{ a: 1 }, { b: 2 }, { c: 3}]).length, 3);
 });
 
+
+
 module("insert");
 
 test("should insert data", function () {
@@ -109,6 +111,13 @@ test("should find item in sub array", function () {
 test("findOne() should return one object", function () {
     var result = collection.findOne({ members: { name: 'angela'} });
     equal(result.age, 9);
+});
+
+test("should use object link", function () {
+    var result = collection.findOne({ club: 'kodomo' }).find({ members: { age: 8} });
+    equal(result.length, 2);
+    equal(result[0].name, 'honda');
+    equal(result[1].name, 'linda');
 });
 
 module("fix bug");

@@ -28,7 +28,7 @@
                     result.push(row);
                 }
             }
-            return result;
+            return ms(result);
         }
         else {
             return this;
@@ -40,13 +40,13 @@
             for (var i = 0; i < this.length; i++) {
                 var row = this[i];
                 if (nodeMatch(row, selector)) {
-                    return row;
+                    return ms(row);
                 }
             }
-            return null;
+            return ms();
         }
         else {
-            return this.length > 0 ? this[0] : null;
+            return this.length > 0 ? ms(this[0]) : ms();
         }
     };
 
@@ -97,7 +97,7 @@
                         }
                     }
                 }
-                return result;
+                return ms(result);
             }
             else {
                 var item = nodeFind(this, selector);
@@ -106,7 +106,7 @@
                 }
                 var list = [];
                 list.push(item);
-                return list;
+                return ms(list);
             }
 
         }
@@ -154,10 +154,10 @@
                     var item = nodeFind(this[i], selector);
                     if (item != null) {
                         if (isArray(item)) {
-                            return item[0];
+                            return ms(item[0]);
                         }
                         else {
-                            return item;
+                            return ms(item);
                         }
                     }
                 }
@@ -167,17 +167,17 @@
                 var item = nodeFind(this, selector);
                 if (item != null) {
                     if (isArray(item)) {
-                        return item[0];
+                        return ms(item[0]);
                     }
                     else {
-                        return item;
+                        return ms(item);
                     }
                 }
             }
-            return null;
+            return ms();
         }
         else {
-            return this.length > 0 ? this[0] : null;
+            return this.length > 0 ? ms(this[0]) : ms();
         }
     };
 
