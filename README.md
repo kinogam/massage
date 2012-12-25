@@ -1,4 +1,4 @@
 massage
 ======
 
-A mongodb api client side collection tool
+A client-side Array filter tool
