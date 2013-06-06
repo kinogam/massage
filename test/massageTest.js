@@ -120,6 +120,13 @@ test("should use object link", function () {
     equal(result[1].name, 'linda');
 });
 
+module("index");
+
+test("can get match index", function () {
+    var result = collection.getMatchIndex({ name: 'jacky' });
+    equal(result, 2);
+});
+
 module("fix bug");
 
 test("fix object parameter bug", function () {
