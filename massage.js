@@ -13,7 +13,6 @@
         _ms.matchOne = _matchOne;
         _ms.find = _find;
         _ms.findOne = _findOne;
-        _ms.getMatchIndex = _getMatchIndex;
         return _ms;
     };
 
