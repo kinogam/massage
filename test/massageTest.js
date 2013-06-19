@@ -15,26 +15,27 @@ test("given a array that length is 3, then collection's length should be 3", fun
 
 
 
-module("insert");
+//module("insert");
 
-test("should insert data", function () {
-    var collection = ms();
-    collection.insert({ name: 'kino', age: 29 });
-    equal(collection.length, 1);
-});
+//test("should insert data", function () {
+//    var collection = ms();
+//    collection.insert({ name: 'kino', age: 29 });
+//    equal(collection.length, 1);
+//});
 
 var collection = null;
 
 module("match", {
     setup: function () {
-        collection = ms();
-        collection.insert({ name: 'kino', age: 29 });
-        collection.insert({ name: 'tom', age: 59 });
-        collection.insert({ name: 'jacky', age: 29 });
-        collection.insert({ name: 'jobs', age: 29, location: { address: 'king street'} });
-        collection.insert({ name: 'rose', age: 17, location: { address: 'rose street'} });
-        collection.insert({ club: 'ysh', members: [{ name: 'james', age: 19 }, { name: 'marry', age: 33}] });
-        collection.insert({ club: 'kodomo', members: [{ name: 'angela', age: 9 }, { name: 'honda', age: 8}] });
+        collection = ms([
+            { name: 'kino', age: 29 },
+            { name: 'tom', age: 59 },
+            { name: 'jacky', age: 29 },
+            { name: 'jobs', age: 29, location: { address: 'king street', postCode: '5200' } },
+            { name: 'rose', age: 17, location: { address: 'rose street', postCode: '5210' } },
+            { club: 'ysh', members: [{ name: 'james', age: 19 }, { name: 'marry', age: 33 }] },
+            { club: 'kodomo', members: [{ name: 'angela', age: 9 }, { name: 'honda', age: 8 }, { name: 'linda', age: 8 }] }
+        ]);
     }
 });
 
@@ -65,6 +66,15 @@ test("matchOne() should return one object", function () {
     equal(result.club, 'kodomo');
 });
 
+test("should use $lt,$lte,$gt,$gte as match condition", function () {
+    var result = collection.match({ age: {"$gt": 10, "$lte": 29 } });
+    equal(result.length, 4);
+});
+
+test("should use $in as match condition", function () {
+    var result = collection.match({ age: { "$in": [17, 59] } });
+    equal(result.length, 2);
+});
 
 module("find", {
     setup: function () {

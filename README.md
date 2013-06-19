@@ -51,6 +51,18 @@ match only one item with selector
     //result.club 'kodomo'
 ```
 
+use $lt,$lte,$gt,$gte as match condition
+```js
+    var result = collection.match({ age: {"$gt": 10, "$lte": 29 } });
+    //result.length  4
+```
+
+use $in as match condition
+```js
+    var result = collection.match({ age: { "$in": [17, 59] } });
+    //result.length 2
+```
+
 you can also find data with selector,it will return a node
 ```js
     var result = collection.find({ name: 'jacky' });

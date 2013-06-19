@@ -53,31 +53,101 @@
 
     var nodeMatch = function (node, selector) {
         for (var i in selector) {
-            var nodeItem = node[i];
+
+            //假如当前数据节点为空则返回false
+            var nodeItem = node[i],
+                selectorItem = selector[i];
+
             if (nodeItem == null) {
                 return false;
             }
-            if (typeof selector[i] === 'object') {
+
+            //如果当前节点类型为对象，而且节点属性又不包含以$开头的属性的时候，执行递归遍历处理
+            if (typeof selectorItem === 'object' && notInclude$(selectorItem)) {
                 if (isArray(nodeItem)) {
                     for (var j = 0; j < nodeItem.length; j++) {
-                        if (nodeMatch(nodeItem[j], selector[i])) {
+                        if (nodeMatch(nodeItem[j], selectorItem)) {
                             return true;
                         }
                     }
                     return false;
                 }
-                else if (!nodeMatch(node[i], selector[i])) {
+                else if (!nodeMatch(nodeItem, selectorItem)) {
                     return false;
                 }
             }
-            else if (node[i] != selector[i]) {
-                return false;
+            //执行非对象等值验证，或者含有$属性的条件验证
+            else {
+                //判断是否使用条件选择,是则做条件验证
+                if (!notInclude$(selectorItem)) {
+                    if (!matchCondition(nodeItem, selectorItem)) {
+                        return false;
+                    }
+                }
+                //否则只做等值验证
+                else if (nodeItem != selectorItem) {
+                    return false;
+                }
             }
         }
         return true;
     };
 
+    var notInclude$ = function (selectorNode) {
+        for (var prop in selectorNode) {
+            //一击脱出!
+            if (!/^\$/.test(prop)) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    };
+
+    var matchCondition = function (nodeItem, selectorNode) {
+        for (var prop in selectorNode) {
+            if (prop === '$lt') {
+                if (!(nodeItem < selectorNode[prop])) {
+                    return false;
+                }
+            }
+            else if (prop === '$gt') {
+                if (!(nodeItem > selectorNode[prop])) {
+                    return false;
+                }
+            }
+            else if (prop === '$lte') {
+                if (!(nodeItem <= selectorNode[prop])) {
+                    return false;
+                }
+            }
+            else if (prop === '$gte') {
+                if (!(nodeItem >= selectorNode[prop])) {
+                    return false;
+                }
+            }
+            else if (prop === '$in') {
+                var inVals = selectorNode[prop],
+                    isInClude = false;
+
+                for (var i = 0; i < inVals.length; i++) {
+                    if (nodeItem == inVals[i]) {
+                        isInClude = true;
+                    }
+                }
+
+                if (!isInClude) {
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    };
+
     /* end match module */
+
+
 
     /* find module */
 
