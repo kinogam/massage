@@ -63,7 +63,7 @@ use $in as match condition
     //result.length 2
 ```
 
-use $in as match condition
+use $or as match condition
 ```js
     var result = collection.match({ age: { "$or": [{ "$gte": 50, "$lt": 70 }, { "$gte": 10, "$lt": 20 }] } });
     //result.length  3
