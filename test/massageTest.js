@@ -31,6 +31,8 @@ module("match", {
             { name: 'kino', age: 29 },
             { name: 'tom', age: 59 },
             { name: 'jacky', age: 29 },
+            { name: 'rose', age: 34 },
+            { name: 'monki', age: 62 },
             { name: 'jobs', age: 29, location: { address: 'king street', postCode: '5200' } },
             { name: 'rose', age: 17, location: { address: 'rose street', postCode: '5210' } },
             { club: 'ysh', members: [{ name: 'james', age: 19 }, { name: 'marry', age: 33 }] },
@@ -41,7 +43,7 @@ module("match", {
 
 test("should match data", function () {
     var list = collection.match();
-    equal(list.length, 7);
+    equal(list.length, 9);
 });
 
 
@@ -66,14 +68,19 @@ test("matchOne() should return one object", function () {
     equal(result.club, 'kodomo');
 });
 
-test("should use $lt,$lte,$gt,$gte as match condition", function () {
+test("can use $lt,$lte,$gt,$gte as match condition", function () {
     var result = collection.match({ age: {"$gt": 10, "$lte": 29 } });
     equal(result.length, 4);
 });
 
-test("should use $in as match condition", function () {
+test("can use $in as match condition", function () {
     var result = collection.match({ age: { "$in": [17, 59] } });
     equal(result.length, 2);
+});
+
+test("can use $or as match condition", function () {
+    var result = collection.match({ age: { "$or": [{ "$gte": 50, "$lt": 70 }, { "$gte": 10, "$lt": 20 }] } });
+    equal(result.length, 3);
 });
 
 module("find", {

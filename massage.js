@@ -78,17 +78,24 @@
             }
             //执行非对象等值验证，或者含有$属性的条件验证
             else {
-                //判断是否使用条件选择,是则做条件验证
-                if (!notInclude$(selectorItem)) {
-                    if (!matchCondition(nodeItem, selectorItem)) {
-                        return false;
-                    }
-                }
-                //否则只做等值验证
-                else if (nodeItem != selectorItem) {
+                if (!nodeValCheck(nodeItem, selectorItem)) {
                     return false;
                 }
             }
+        }
+        return true;
+    };
+
+    var nodeValCheck = function (nodeItem, selectorItem) {
+        //判断是否使用条件选择,是则做条件验证
+        if (!notInclude$(selectorItem)) {
+            if (!matchCondition(nodeItem, selectorItem)) {
+                return false;
+            }
+        }
+            //否则只做等值验证
+        else if (nodeItem != selectorItem) {
+            return false;
         }
         return true;
     };
@@ -106,43 +113,49 @@
 
     var matchCondition = function (nodeItem, selectorNode) {
         for (var prop in selectorNode) {
-            if (prop === '$lt') {
-                if (!(nodeItem < selectorNode[prop])) {
-                    return false;
-                }
+            if (!conditionCollection[prop](nodeItem, selectorNode[prop])) {
+                return false;
             }
-            else if (prop === '$gt') {
-                if (!(nodeItem > selectorNode[prop])) {
-                    return false;
-                }
-            }
-            else if (prop === '$lte') {
-                if (!(nodeItem <= selectorNode[prop])) {
-                    return false;
-                }
-            }
-            else if (prop === '$gte') {
-                if (!(nodeItem >= selectorNode[prop])) {
-                    return false;
-                }
-            }
-            else if (prop === '$in') {
-                var inVals = selectorNode[prop],
-                    isInClude = false;
-
-                for (var i = 0; i < inVals.length; i++) {
-                    if (nodeItem == inVals[i]) {
-                        isInClude = true;
-                    }
-                }
-
-                if (!isInClude) {
-                    return false;
-                }
-            }
-
         }
         return true;
+    };
+
+
+    var conditionCollection = {
+        "$lt": function (nodeItem, selectorNode) {
+            return nodeItem < selectorNode;
+        },
+        "$gt": function (nodeItem, selectorNode) {
+            return nodeItem > selectorNode;
+        },
+        "$lte": function (nodeItem, selectorNode) {
+            return nodeItem <= selectorNode;
+        },
+        "$gte": function (nodeItem, selectorNode) {
+            return nodeItem >= selectorNode;
+        },
+        "$in": function (nodeItem, selectorNode) {
+            var isInClude = false;
+
+            for (var i = 0; i < selectorNode.length; i++) {
+                if (nodeItem == selectorNode[i]) {
+                    isInClude = true;
+                }
+            }
+
+            if (!isInClude) {
+                return false;
+            }
+            return true;
+        },
+        "$or": function (nodeItem, selectorNode) {
+            for (var i = 0; i < selectorNode.length; i++) {
+                if (nodeValCheck(nodeItem, selectorNode[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
     };
 
     /* end match module */
