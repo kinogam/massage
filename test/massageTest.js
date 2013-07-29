@@ -153,3 +153,22 @@ test("fix object parameter bug", function () {
     equal(obj.age, 8);
     equal(list[0].age, 8);
 });
+
+test("fix multi condition bug", function () {
+    var md = massage([
+        {
+            FlightLineCount: 1,
+            ListB2GIFlightInfoView: [{
+                airport: 'testAirport1'
+            }]
+        },
+        {
+            FlightLineCount: 2,
+            ListB2GIFlightInfoView: [{
+                airport: 'testAirport2'
+            }]
+        }
+    ]);
+    var result = md.match({ FlightLineCount: 1, ListB2GIFlightInfoView: { airport: { "$in": ["testAirport2"] } } });
+    equal(result.length, 0);
+});

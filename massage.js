@@ -65,12 +65,19 @@
             //如果当前节点类型为对象，而且节点属性又不包含以$开头的属性的时候，执行递归遍历处理
             if (typeof selectorItem === 'object' && notInclude$(selectorItem)) {
                 if (isArray(nodeItem)) {
+                    var hasArrayMath = false;
+
                     for (var j = 0; j < nodeItem.length; j++) {
                         if (nodeMatch(nodeItem[j], selectorItem)) {
-                            return true;
+                            hasArrayMath = true;
+                            break;
                         }
                     }
-                    return false;
+                    
+                    //如果数组未能匹配到任意节点折返回false
+                    if (!hasArrayMath) {
+                        return false;
+                    }
                 }
                 else if (!nodeMatch(nodeItem, selectorItem)) {
                     return false;
@@ -88,7 +95,7 @@
 
     var nodeValCheck = function (nodeItem, selectorItem) {
         //判断是否使用条件选择,是则做条件验证
-        if (!notInclude$(selectorItem)) {
+        if (typeof selectorItem === 'object' && !notInclude$(selectorItem)) {
             if (!matchCondition(nodeItem, selectorItem)) {
                 return false;
             }
